@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
 // Default Route
-app.get('/', (req, res) => res.send("Issuance api is working!"));
+app.get('/', (req, res) => res.send("Ready to go!"));
 
 app.use('/api/auth', require('./routes/auth.route'));
 app.use('/api/purchases', require('./routes/purchases.route'));
