@@ -12,8 +12,10 @@ exports.createPurchase = async (req, res) => {
         }
 
         // Check if asset is available in the base
-        let asset = await Asset.findOne({ _id: assetId, baseId });
-        if (!asset) return res.status(404).json({ error: 'Asset not found in this base' });
+        let asset = await Asset.findOne({ _id: assetId });
+        if (!asset.baseIds.find(base => base._id == baseId)) {
+            return res.status(404).json({ error: 'Asset not found in this base' });
+        }
 
         // Update asset quantity
         const beforeQuantity = asset.quantity;
