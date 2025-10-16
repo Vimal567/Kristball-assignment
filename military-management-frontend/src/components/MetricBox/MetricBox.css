@@ -1,0 +1,26 @@
+.metric-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid rgb(172, 170, 170);
+    border-radius: 10px;
+    background-color: rgba(255, 255, 255, 0.973);
+    padding: 1rem;
+}
+
+.metric-body .heading {
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: large;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.metric-body .value {
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.metric-body.clickable:hover {
+    background-color: #f0f0f0;
+    transition: background-color 0.2s ease;
+}

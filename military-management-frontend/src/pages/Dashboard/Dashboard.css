@@ -1,0 +1,11 @@
+.metrics-container {
+    display: grid;
+    grid-template-columns: 20% 20% 20% 20%;
+    gap: 5%;
+}
+
+@media screen and (width <=568px) {
+    .metrics-container {
+        grid-template-columns: 47% 47%;
+    }
+}

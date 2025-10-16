@@ -1,6 +1,5 @@
 const Expenditure = require('../models/Expenditure.model');
 const Asset = require('../models/Asset.model');
-const Base = require('../models/Base.model');
 const logAction = require('../middleware/audit');
 
 exports.createExpenditure = async (req, res) => {
