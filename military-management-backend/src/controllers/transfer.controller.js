@@ -2,29 +2,46 @@ const Transfer = require('../models/Transfer.model');
 const Asset = require('../models/Asset.model');
 const logAction = require('../middleware/audit');
 
+const mongoose = require('mongoose');
+
 exports.createTransfer = async (req, res) => {
     try {
         const { assetId, fromBaseId, toBaseId, quantity } = req.body;
 
-        if (fromBaseId === toBaseId) return res.status(400).json({ error: 'From and To base cannot be same' });
+        if (fromBaseId === toBaseId) {
+            return res.status(400).json({ error: 'From and To base cannot be same' });
+        }
 
-        const sourceAsset = await Asset.findOne({ _id: assetId, baseId: fromBaseId });
+        // 1. Check if asset exists at the "from" base
+        const sourceAsset = await Asset.findOne({
+            _id: assetId,
+            baseIds: { $in: [fromBaseId] }
+        });
 
-        // Check fromBase has enough quantity
         if (!sourceAsset || sourceAsset.quantity < quantity) {
             return res.status(400).json({ error: 'Insufficient stock at from base' });
         }
 
         // Update quantities
         sourceAsset.quantity -= quantity;
+
+        // 3. Ensure `toBaseId` is present in baseIds (if not, add it)
+        if (!sourceAsset.baseIds.some(id => id.toString() === toBaseId)) {
+            sourceAsset.baseIds.push(toBaseId);
+        }
+
         await sourceAsset.save();
 
-        // Save transfer record
+        // 4. Create transfer record
         const transfer = await Transfer.create({
-            assetId, fromBaseId, toBaseId, quantity, initiatedBy: req.user._id
+            assetId,
+            fromBaseId,
+            toBaseId,
+            quantity,
+            initiatedBy: req.user._id
         });
 
-        // Audit log
+        // 5. Log action
         await logAction({
             userId: req.user._id,
             action: 'create_transfer',
@@ -39,6 +56,7 @@ exports.createTransfer = async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 };
+
 
 exports.getTransfers = async (req, res) => {
     try {
