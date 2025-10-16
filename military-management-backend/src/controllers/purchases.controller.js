@@ -48,14 +48,30 @@ exports.createPurchase = async (req, res) => {
 // Get all purchases (with optional filters: baseId, assetId, date range)
 exports.getPurchases = async (req, res) => {
     try {
-        const { baseId, assetId, startDate, endDate } = req.query;
+        const { baseId, assetType, startDate, endDate } = req.query;
 
         let filter = {};
-        if (baseId) filter.baseId = baseId;
-        if (assetId) filter.assetId = assetId;
-        if (startDate || endDate) filter.purchaseDate = {};
-        if (startDate) filter.purchaseDate.$gte = new Date(startDate);//MM/DD/YYYY
-        if (endDate) filter.purchaseDate.$lte = new Date(endDate);//MM/DD/YYYY
+
+        if (baseId) { 
+            filter.baseId = baseId; 
+        }
+
+        if (startDate || endDate) {
+            filter.purchaseDate = {};
+            if (startDate) {
+                filter.purchaseDate.$gte = new Date(startDate); // MM/DD/YYYY
+            }
+            if (endDate) {
+                filter.purchaseDate.$lte = new Date(endDate); // MM/DD/YYYY
+            }
+        }
+
+        // If assetType is provided, find asset IDs with that type
+        if (assetType) {
+            const assets = await Asset.find({ type: assetType }).select('_id');
+            const assetIds = assets.map(a => a._id);
+            filter.assetId = { $in: assetIds };
+        }
 
         const purchases = await Purchase.find(filter)
             .populate('assetId', 'name type')
@@ -69,3 +85,4 @@ exports.getPurchases = async (req, res) => {
         res.status(500).json({ error: 'Server error' });
     }
 };
+
