@@ -2,8 +2,6 @@ const Transfer = require('../models/Transfer.model');
 const Asset = require('../models/Asset.model');
 const logAction = require('../middleware/audit');
 
-const mongoose = require('mongoose');
-
 exports.createTransfer = async (req, res) => {
     try {
         const { assetId, fromBaseId, toBaseId, quantity } = req.body;

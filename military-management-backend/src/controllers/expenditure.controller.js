@@ -5,7 +5,7 @@ const logAction = require('../middleware/audit');
 
 exports.createExpenditure = async (req, res) => {
     try {
-        const { assignedTo, assetId, quantity, reason } = req.body;
+        const { assignedTo, assetId, baseId, quantity, reason } = req.body;
 
         const asset = await Asset.findOne({ _id: assetId });
         if (!asset || asset.quantity < quantity)
@@ -14,7 +14,7 @@ exports.createExpenditure = async (req, res) => {
         asset.quantity -= quantity;
         await asset.save();
 
-        const expenditure = await Expenditure.create({ assignedTo, assetId, quantity, reason });
+        const expenditure = await Expenditure.create({ assignedTo, assetId, baseId, quantity, reason });
 
         await logAction({
             userId: req.user._id,
@@ -34,15 +34,7 @@ exports.createExpenditure = async (req, res) => {
 
 exports.getExpenditures = async (req, res) => {
     try {
-        const expenditures = await Expenditure.find()
-            .populate({
-                path: 'assetId',
-                model: Asset,
-                populate: {
-                    path: 'baseIds',
-                    model: Base
-                }
-            });
+        const expenditures = await Expenditure.find().populate("assetId baseId");
 
         res.json(expenditures);
     } catch (err) {

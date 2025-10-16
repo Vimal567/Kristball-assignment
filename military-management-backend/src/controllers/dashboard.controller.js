@@ -11,7 +11,7 @@ exports.getSummary = async (req, res) => {
         let asset;
 
         if (baseId) {
-            query["baseId"] = baseId;
+            query["baseIds"] = baseId;
         }
         if (assetType) {
             asset = await Asset.findOne({ type: assetType });
@@ -22,9 +22,6 @@ exports.getSummary = async (req, res) => {
             { $match: query },
             { $group: { _id: null, total: { $sum: "$quantity" } } }
         ]);
-
-        console.log(purchases)
-
 
         const transfersIn = await Transfer.aggregate([
             { $match: query },
@@ -41,7 +38,7 @@ exports.getSummary = async (req, res) => {
             { $group: { _id: null, total: { $sum: "$quantity" } } }
         ]);
 
-        const openingBalance = asset?.quantity ?? 0;
+        const openingBalance = asset?.quantity ?? 100;
         const netMovement = (purchases[0]?.total ?? 0) + (transfersIn[0]?.total ?? 0) - (transfersOut[0]?.total ?? 0);
         const closingBalance = openingBalance + netMovement - (expenditures[0]?.total ?? 0);
 
