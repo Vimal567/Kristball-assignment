@@ -12,7 +12,6 @@ exports.register = async (req, res) => {
     try {
         const { name, email, password, role, baseId } = req.body;
 
-        // Only Admin can create BaseCommander / LogisticsOfficer
         if (!['Admin', 'BaseCommander', 'LogisticsOfficer'].includes(role)) {
             return res.status(400).json({ error: 'Invalid role' });
         }
