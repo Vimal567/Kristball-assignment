@@ -50,7 +50,6 @@ exports.getSummary = async (req, res) => {
             purchases: purchases[0]?.total ?? 0,
             transfersIn: transfersIn[0]?.total ?? 0,
             transfersOut: transfersOut[0]?.total ?? 0,
-            assignments: assignments[0]?.total ?? 0,
             expenditures: expenditures[0]?.total ?? 0,
             netMovement,
             closingBalance
