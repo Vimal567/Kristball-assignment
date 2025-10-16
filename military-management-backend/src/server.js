@@ -31,6 +31,7 @@ app.use('/api/purchases', require('./routes/purchases.route'));
 app.use('/api/transfers', require('./routes/transfers.route'));
 app.use('/api/expenditures', require('./routes/expenditures.route'));
 app.use('/api/dashboard', require('./routes/dashboard.route'));
+app.use('/api/bases', require('./routes/base.route'));
 
 app.listen(PORT, () => {
   console.log(`Server started at ${PORT}`);
